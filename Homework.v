@@ -1,4 +1,4 @@
-Require Import HoTT Group Join UnivalenceAxiom.
+Require Import HoTT Join UnivalenceAxiom.
 
 (** remove printing * *)
 
