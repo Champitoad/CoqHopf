@@ -1,0 +1,1193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="coqdoc.css" rel="stylesheet" type="text/css" />
+<title></title>
+</head>
+
+<body>
+
+<div id="page">
+
+<div id="header">
+</div>
+
+<div id="main">
+
+<div class="code">
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">HoTT</span> <span class="id" title="var">Group</span> <span class="id" title="var">Join</span> <span class="id" title="var">UnivalenceAxiom</span>.<br/>
+
+<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<i>Note</i>: we will use the <span class="inlinecode"><span class="id" title="var">Admitted</span></span> command whenever we do not
+    give the term for a certain type. We then associate the
+    following meanings to assertion commands:
+
+<div class="paragraph"> </div>
+
+<ul class="doclist">
+<li> <span class="inlinecode"><span class="id" title="keyword">Fact</span></span> denotes a fact proven in the course or the HoTT book
+
+</li>
+<li> <span class="inlinecode"><span class="id" title="var">Proposition</span></span> denotes either a proposition assumed to be true
+      in the subject, or a partially answered optional question
+
+</li>
+<li> <span class="inlinecode"><span class="id" title="keyword">Lemma</span></span>/<span class="inlinecode"><span class="id" title="keyword">Theorem</span></span> denote a partially answered mandatory question
+
+</li>
+</ul>
+
+<div class="paragraph"> </div>
+
+    We also follow the convention to name <span class="inlinecode"><span class="id" title="var">q_i_j</span></span> the answer to
+    question j of exercise i.
+
+<div class="paragraph"> </div>
+
+    Whenever we use a lemma implemented in the HoTT library,
+    we will be careful to state which lemma of the course/HoTT book
+    it corresponds to.
+
+<div class="paragraph"> </div>
+
+<a name="lab1"></a><h1 class="section">Prelude</h1>
+
+<div class="paragraph"> </div>
+
+ Notations to match more closely those of the course/subject. 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Notation</span> &quot;'ua'" := <span class="id" title="var">equiv_path</span>.<br/>
+<span class="id" title="keyword">Notation</span> &quot;'ua^-1'" := <span class="id" title="var">path_universe</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Notation</span> &quot;2" := <span class="id" title="var">Bool</span>.<br/>
+<span class="id" title="keyword">Notation</span> &quot;'Σ' A" := (<span class="id" title="var">Susp</span> <span class="id" title="var">A</span>) (<span class="id" title="var">format</span> "'Σ' A", <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 10).<br/>
+<span class="id" title="keyword">Notation</span> &quot;'S^' n" := (<span class="id" title="var">Sphere</span> <span class="id" title="var">n</span>) (<span class="id" title="var">format</span> "'S^' n", <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 10).<br/>
+<span class="id" title="keyword">Notation</span> &quot;'S*^' n" := (<span class="id" title="var">psphere</span> <span class="id" title="var">n</span>) (<span class="id" title="var">format</span> "'S*^' n", <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 10).<br/>
+<span class="id" title="keyword">Infix</span> &quot;×" := <span class="id" title="var">prod</span> (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 30).<br/>
+<span class="id" title="keyword">Infix</span> &quot;∗" := <span class="id" title="var">Join</span> (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 30).<br/>
+<span class="id" title="keyword">Infix</span> &quot;≃" := <span class="id" title="var">Equiv</span> (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 50).<br/>
+<span class="id" title="keyword">Infix</span> &quot;≃*" := <span class="id" title="var">pEquiv</span> (<span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 50).<br/>
+<span class="id" title="keyword">Notation</span> &quot;| A |" := (<span class="id" title="var">merely</span> <span class="id" title="var">A</span>) (<span class="id" title="var">format</span> "| A |", <span class="id" title="tactic">at</span> <span class="id" title="keyword">level</span> 70).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab2"></a><h3 class="section">Spans</h3>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Inductive</span> <span class="id" title="var">Span</span> :=<br/>
+| <span class="id" title="var">span</span> {<span class="id" title="var">A</span> <span class="id" title="var">B</span> <span class="id" title="var">C</span> : <span class="id" title="keyword">Type</span>} (<span class="id" title="var">f</span> : <span class="id" title="var">B</span> → <span class="id" title="var">A</span>) (<span class="id" title="var">g</span> : <span class="id" title="var">B</span> → <span class="id" title="var">C</span>).<br/>
+
+<br/>
+<span class="id" title="keyword">Record</span> <span class="id" title="var">EqSpan'</span><br/>
+&nbsp;&nbsp;{<span class="id" title="var">A</span> <span class="id" title="var">B</span> <span class="id" title="var">C</span> : <span class="id" title="keyword">Type</span>} (<span class="id" title="var">f</span> : <span class="id" title="var">B</span> → <span class="id" title="var">A</span>) (<span class="id" title="var">g</span> : <span class="id" title="var">B</span> → <span class="id" title="var">C</span>) <br/>
+&nbsp;&nbsp;{<span class="id" title="var">A'</span> <span class="id" title="var">B'</span> <span class="id" title="var">C'</span> : <span class="id" title="keyword">Type</span>} (<span class="id" title="var">f'</span> : <span class="id" title="var">B'</span> → <span class="id" title="var">A'</span>) (<span class="id" title="var">g'</span> : <span class="id" title="var">B'</span> → <span class="id" title="var">C'</span>)<br/>
+:= {<br/>
+&nbsp;&nbsp;<span class="id" title="var">equiv_left</span> : <span class="id" title="var">A</span> ≃ <span class="id" title="var">A'</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="var">equiv_apex</span> : <span class="id" title="var">B</span> ≃ <span class="id" title="var">B'</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="var">equiv_right</span> : <span class="id" title="var">C</span> ≃ <span class="id" title="var">C'</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="var">coherence_left</span> : <span class="id" title="var">equiv_left</span> <span class="id" title="var">o</span> <span class="id" title="var">f</span> == <span class="id" title="var">f'</span> <span class="id" title="var">o</span> <span class="id" title="var">equiv_apex</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="var">coherence_right</span> : <span class="id" title="var">equiv_right</span> <span class="id" title="var">o</span> <span class="id" title="var">g</span> == <span class="id" title="var">g'</span> <span class="id" title="var">o</span> <span class="id" title="var">equiv_apex</span>;<br/>
+}.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">EqSpan</span> '(<span class="id" title="var">span</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">f</span> <span class="id" title="var">g</span>) '(<span class="id" title="var">span</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">f'</span> <span class="id" title="var">g'</span>) :=<br/>
+&nbsp;&nbsp;<span class="id" title="var">EqSpan'</span> <span class="id" title="var">f</span> <span class="id" title="var">g</span> <span class="id" title="var">f'</span> <span class="id" title="var">g'</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Proposition</span> <span class="id" title="var">path_span</span> {<span class="id" title="var">s</span> <span class="id" title="var">s'</span>} :<br/>
+&nbsp;&nbsp;<span class="id" title="var">EqSpan</span> <span class="id" title="var">s</span> <span class="id" title="var">s'</span> ≃ (<span class="id" title="var">s</span> = <span class="id" title="var">s'</span>).<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab3"></a><h1 class="section">Exercise 1</h1>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Section</span> <span class="id" title="var">Exercise_1</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab4"></a><h2 class="section">Question 1</h2>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Section</span> <span class="id" title="var">Question_1</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Context</span> (<span class="id" title="var">A</span> : <span class="id" title="keyword">Type</span>).<br/>
+
+<br/>
+<span class="id" title="keyword">Let</span> φ : 2 ∗ <span class="id" title="var">A</span> → <span class="id" title="var">Σ</span> <span class="id" title="var">A</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;By&nbsp;recursion&nbsp;on&nbsp;joins,&nbsp;that&nbsp;is&nbsp;on&nbsp;pushouts&nbsp;*)</span><br/>
+&nbsp;&nbsp;<span class="id" title="var">srapply</span> <span class="id" title="var">Join_rec</span>; <span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;φ(left(b))&nbsp;:≡&nbsp;…&nbsp;*)</span><br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">exact</span> (<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">fun</span> <span class="id" title="var">b</span> ⇒ <span class="id" title="keyword">match</span> <span class="id" title="var">b</span> <span class="id" title="keyword">with</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id" title="var">false</span> ⇒ <span class="id" title="var">North</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <span class="id" title="var">true</span> ⇒ <span class="id" title="var">South</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="keyword">end</span>).<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;φ(right(a))&nbsp;:≡&nbsp;…&nbsp;*)</span><br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">exact</span> (<span class="id" title="keyword">fun</span> <span class="id" title="var">_</span> ⇒ <span class="id" title="var">South</span>).<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;ap_φ(quo(b,a))&nbsp;:≡&nbsp;…&nbsp;*)</span><br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">intros</span> <span class="id" title="var">b</span> <span class="id" title="var">a</span>. <span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;By&nbsp;recursion/case&nbsp;on&nbsp;b&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">b</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">exact</span> <span class="id" title="var">idpath</span>. <span class="comment">(*&nbsp;<span class="inlinecode"><span class="id" title="var">idpath</span></span>&nbsp;is&nbsp;refl&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">exact</span> (<span class="id" title="var">merid</span> <span class="id" title="var">a</span>).<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Let</span> ψ : <span class="id" title="var">Σ</span> <span class="id" title="var">A</span> → 2 ∗ <span class="id" title="var">A</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;By&nbsp;recursion&nbsp;on&nbsp;suspensions&nbsp;*)</span><br/>
+&nbsp;&nbsp;<span class="id" title="var">srapply</span> <span class="id" title="var">Susp_rec</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;ψ(N)&nbsp;:≡&nbsp;…&nbsp;*)</span><br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">exact</span> (<span class="id" title="var">joinl</span> <span class="id" title="var">false</span>).<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;ψ(S)&nbsp;:≡&nbsp;…&nbsp;*)</span><br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">exact</span> (<span class="id" title="var">joinl</span> <span class="id" title="var">true</span>).<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;ψ(merid_a)&nbsp;:≡&nbsp;…&nbsp;*)</span><br/>
+&nbsp;&nbsp;* <span class="comment">(*&nbsp;<span class="inlinecode"><span class="id" title="var">jglue</span></span> <span class="inlinecode"><span class="id" title="var">b</span></span> <span class="inlinecode"><span class="id" title="var">a</span></span>&nbsp;is&nbsp;quo(b,a)&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">a</span>. <span class="id" title="tactic">exact</span> ((<span class="id" title="var">jglue</span> <span class="id" title="var">false</span> <span class="id" title="var">a</span>) @ (<span class="id" title="var">jglue</span> <span class="id" title="var">true</span> <span class="id" title="var">a</span>)^).<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+For this first proof, we will comment every step in order to
+    document how "informal" reasoning translates into tactics and lemmas
+    of the HoTT library. In subsequent proofs, we will only document
+    parts that use new tactics/lemmas. 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">q_1_1</span> :<br/>
+&nbsp;&nbsp;2 ∗ <span class="id" title="var">A</span> ≃ <span class="id" title="var">Σ</span> <span class="id" title="var">A</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">unshelve</span> <span class="id" title="tactic">econstructor</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;We&nbsp;choose&nbsp;φ&nbsp;as&nbsp;the&nbsp;underlying&nbsp;map&nbsp;of&nbsp;the&nbsp;equivalence&nbsp;*)</span><br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">exact</span> φ.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;We&nbsp;show&nbsp;that&nbsp;φ&nbsp;is&nbsp;indeed&nbsp;an&nbsp;equivalence,&nbsp;with&nbsp;ψ&nbsp;as&nbsp;inverse&nbsp;*)</span><br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">apply</span> <span class="id" title="var">isequiv_adjointify</span> <span class="id" title="keyword">with</span> ψ.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;φ&nbsp;○&nbsp;ψ&nbsp;~&nbsp;id&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">unfold</span> <span class="id" title="var">Sect</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;By&nbsp;induction&nbsp;on&nbsp;suspensions&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">srapply</span> <span class="id" title="var">Susp_ind</span>; <span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;φ(ψ(N)&nbsp;=&nbsp;N&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">exact</span> <span class="id" title="var">idpath</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;φ(ψ(S)&nbsp;=&nbsp;S&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">exact</span> <span class="id" title="var">idpath</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;tr_{merid&nbsp;x}(refl)&nbsp;=&nbsp;refl&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">intros</span> <span class="id" title="var">a</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;We&nbsp;use&nbsp;an&nbsp;instance&nbsp;of&nbsp;theorem&nbsp;2.11.3&nbsp;of&nbsp;the&nbsp;HoTT&nbsp;book&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">transport_paths_FFlr</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;Compute&nbsp;with&nbsp;the&nbsp;definition&nbsp;of&nbsp;ψ&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> ψ. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">Susp_rec_beta_merid</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;Lemma&nbsp;7&nbsp;and&nbsp;8&nbsp;of&nbsp;the&nbsp;course&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">ap_pp</span>, <span class="id" title="var">ap_V</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;Compute&nbsp;with&nbsp;the&nbsp;definition&nbsp;of&nbsp;φ&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> φ. <span class="id" title="tactic">rewrite</span> 2 <span class="id" title="var">Join_rec_beta_jglue</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;The&nbsp;<span class="inlinecode"><span class="id" title="var">hott_simpl</span></span>&nbsp;tactic&nbsp;tries&nbsp;to&nbsp;simplify&nbsp;paths&nbsp;using<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;basic&nbsp;homotopies,&nbsp;such&nbsp;as&nbsp;composition&nbsp;with&nbsp;identity&nbsp;and<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inverse&nbsp;paths&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">hott_simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;ψ&nbsp;○&nbsp;φ&nbsp;~&nbsp;id&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">unfold</span> <span class="id" title="var">Sect</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;By&nbsp;induction&nbsp;on&nbsp;joins&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">srapply</span> <span class="id" title="var">Join_ind</span>; <span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;ψ(φ(left(b)))&nbsp;=&nbsp;left(b)&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">intros</span> <span class="id" title="var">b</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;By&nbsp;case&nbsp;on&nbsp;b&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">b</span>; <span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;** <span class="id" title="tactic">exact</span> <span class="id" title="var">idpath</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;** <span class="id" title="tactic">exact</span> <span class="id" title="var">idpath</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;ψ(φ(right(a)))&nbsp;=&nbsp;right(a)&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">intros</span> <span class="id" title="var">a</span>. <span class="id" title="tactic">exact</span> (<span class="id" title="var">jglue</span> <span class="id" title="var">true</span> <span class="id" title="var">a</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;tr_{quo(b,a)}(refl)&nbsp;=&nbsp;quo(1,a)&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">intros</span> <span class="id" title="var">b</span> <span class="id" title="var">a</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">dp_path_transport</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;Again,&nbsp;same&nbsp;instance&nbsp;of&nbsp;theorem&nbsp;2.11.3&nbsp;of&nbsp;the&nbsp;HoTT&nbsp;book&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">transport_paths_FFlr</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;Compute&nbsp;with&nbsp;the&nbsp;definition&nbsp;of&nbsp;φ&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> φ. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">Join_rec_beta_jglue</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;By&nbsp;case&nbsp;on&nbsp;b&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">destruct</span> <span class="id" title="var">b</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;tr_{quo(1,a)}(refl)&nbsp;=&nbsp;quo(1,a)&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;** <span class="id" title="var">hott_simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;tr_{quo(0,a)}(refl)&nbsp;=&nbsp;quo(1,a)&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;** <span class="comment">(*&nbsp;Compute&nbsp;with&nbsp;the&nbsp;definition&nbsp;of&nbsp;ψ&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> ψ. <span class="id" title="tactic">rewrite</span> <span class="id" title="var">Susp_rec_beta_merid</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;Unwhiskering&nbsp;on&nbsp;the&nbsp;right&nbsp;with&nbsp;quo(1,a),&nbsp;that&nbsp;is<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;post-composing&nbsp;with&nbsp;quo(1,a)&nbsp;on&nbsp;both&nbsp;sides&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> (<span class="id" title="var">cancelR</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> (<span class="id" title="var">jglue</span> <span class="id" title="var">true</span> <span class="id" title="var">a</span>)^).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">hott_simpl</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;Associativity&nbsp;of&nbsp;composition&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">concat_pp_p</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">hott_simpl</span>.<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <span class="id" title="var">Question_1</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab5"></a><h2 class="section">Question 2</h2>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Section</span> <span class="id" title="var">Question_2</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Proposition</span> <span class="id" title="var">q_1_2</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">A</span> <span class="id" title="var">B</span> <span class="id" title="var">C</span>,<br/>
+&nbsp;&nbsp;(<span class="id" title="var">A</span> ∗ <span class="id" title="var">B</span>) ∗ <span class="id" title="var">C</span> ≃ <span class="id" title="var">A</span> ∗ (<span class="id" title="var">B</span> ∗ <span class="id" title="var">C</span>).<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <span class="id" title="var">Question_2</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab6"></a><h2 class="section">Question 3</h2>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Section</span> <span class="id" title="var">Question_3</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Fact</span> <span class="id" title="var">Bool_Sphere_0</span> :<br/>
+&nbsp;&nbsp;2 ≃ <span class="id" title="var">S</span>^0.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+We need functoriality of type formers with respect to equivalence,
+    in order to apply equivalences to their arguments. We could prove
+    it individually for each type former of interest, but we choose
+    instead to use univalence to prove it once and forall. 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">ae</span> {<span class="id" title="var">X</span> <span class="id" title="var">Y</span>} (<span class="id" title="var">T</span> : <span class="id" title="keyword">Type</span> → <span class="id" title="keyword">Type</span>) :<br/>
+&nbsp;&nbsp;<span class="id" title="var">X</span> ≃ <span class="id" title="var">Y</span> → <span class="id" title="var">T</span> <span class="id" title="var">X</span> ≃ <span class="id" title="var">T</span> <span class="id" title="var">Y</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">e</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;<span class="inlinecode"><span class="id" title="var">path_universe_uncurried</span></span>&nbsp;is&nbsp;the&nbsp;map&nbsp;given&nbsp;by&nbsp;univalence&nbsp;*)</span><br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">path_universe_uncurried</span> <span class="id" title="tactic">in</span> <span class="id" title="var">e</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;The&nbsp;<span class="inlinecode"><span class="id" title="var">path_induction</span></span>&nbsp;tactic&nbsp;applies&nbsp;path&nbsp;induction&nbsp;to&nbsp;every<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;path&nbsp;found&nbsp;in&nbsp;the&nbsp;context&nbsp;*)</span><br/>
+&nbsp;&nbsp;<span class="id" title="var">path_induction</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;<span class="inlinecode"><span class="id" title="var">equiv_idmap</span></span>&nbsp;is&nbsp;the&nbsp;identity&nbsp;equivalence&nbsp;*)</span><br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exact</span> <span class="id" title="var">equiv_idmap</span>.<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The <span class="inlinecode"><span class="id" title="tactic">rewrite</span></span> tactic of the HoTT library is quite weak since
+    it does not support equivalences, and does not allow selecting
+    the occurrences of the term we want to rewrite. Thus we will
+    compose equivalences manually using the <span class="inlinecode"><span class="id" title="tactic">refine</span></span> tactic and
+    the <span class="inlinecode"><span class="id" title="var">oE</span></span> composition operator. 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">equiv_scope</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">q_1_3</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">S</span>^1 ∗ <span class="id" title="var">S</span>^1 ≃ <span class="id" title="var">S</span>^3.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;Rewrite&nbsp;on&nbsp;the&nbsp;left&nbsp;of&nbsp;∗&nbsp;using&nbsp;functoriality&nbsp;*)</span><br/>
+&nbsp;&nbsp;<span class="id" title="tactic">refine</span> (<span class="id" title="var">_</span> <span class="id" title="var">oE</span> <span class="id" title="var">ae</span> (<span class="id" title="keyword">fun</span> <span class="id" title="var">X</span> ⇒ <span class="id" title="var">X</span> ∗ <span class="id" title="var">_</span>) <span class="id" title="var">_</span>).<br/>
+&nbsp;&nbsp;2: { <span class="comment">(*&nbsp;Rewrite&nbsp;under&nbsp;Σ&nbsp;using&nbsp;functoriality&nbsp;(since&nbsp;S^n&nbsp;is&nbsp;the<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;definition&nbsp;of&nbsp;the&nbsp;sphere&nbsp;based&nbsp;on&nbsp;iterated&nbsp;suspensions)&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">refine</span> (<span class="id" title="var">ae</span> <span class="id" title="var">Susp</span> <span class="id" title="var">_</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;Rewrite&nbsp;S^0&nbsp;into&nbsp;2&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">exact</span> <span class="id" title="var">Bool_Sphere_0</span>^-1. }<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;Rewrite&nbsp;on&nbsp;the&nbsp;left&nbsp;of&nbsp;∗&nbsp;using&nbsp;functoriality&nbsp;*)</span><br/>
+&nbsp;&nbsp;<span class="id" title="tactic">refine</span> (<span class="id" title="var">_</span> <span class="id" title="var">oE</span> <span class="id" title="var">ae</span> (<span class="id" title="keyword">fun</span> <span class="id" title="var">X</span> ⇒ <span class="id" title="var">X</span> ∗ <span class="id" title="var">_</span>) <span class="id" title="var">_</span>).<br/>
+&nbsp;&nbsp;2: { <span class="comment">(*&nbsp;Rewrite&nbsp;Σ2&nbsp;into&nbsp;2&nbsp;∗&nbsp;2&nbsp;using&nbsp;<span class="inlinecode"><span class="id" title="var">q_1_1</span></span>&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">exact</span> (<span class="id" title="var">q_1_1</span> <span class="id" title="var">_</span>)^-1. }<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;Associativity&nbsp;of&nbsp;∗&nbsp;*)</span><br/>
+&nbsp;&nbsp;<span class="id" title="tactic">refine</span> (<span class="id" title="var">_</span> <span class="id" title="var">oE</span> <span class="id" title="var">q_1_2</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span>).<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;Rewrite&nbsp;on&nbsp;the&nbsp;right&nbsp;of&nbsp;∗&nbsp;using&nbsp;functoriality&nbsp;*)</span><br/>
+&nbsp;&nbsp;<span class="id" title="tactic">refine</span> (<span class="id" title="var">_</span> <span class="id" title="var">oE</span> <span class="id" title="var">ae</span> (<span class="id" title="keyword">fun</span> <span class="id" title="var">X</span> ⇒ <span class="id" title="var">_</span> ∗ <span class="id" title="var">X</span>) <span class="id" title="var">_</span>).<br/>
+&nbsp;&nbsp;2: { <span class="comment">(*&nbsp;Rewrite&nbsp;2&nbsp;∗&nbsp;S^1&nbsp;into&nbsp;ΣS^1&nbsp;using&nbsp;<span class="inlinecode"><span class="id" title="var">q_1_1</span></span>&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">exact</span> (<span class="id" title="var">q_1_1</span> <span class="id" title="var">_</span>). }<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;Rewrite&nbsp;2&nbsp;∗&nbsp;S^1&nbsp;into&nbsp;ΣΣS^1&nbsp;using&nbsp;<span class="inlinecode"><span class="id" title="var">q_1_1</span></span>&nbsp;*)</span><br/>
+&nbsp;&nbsp;<span class="id" title="tactic">refine</span> (<span class="id" title="var">_</span> <span class="id" title="var">oE</span> <span class="id" title="var">q_1_1</span> <span class="id" title="var">_</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exact</span> <span class="id" title="var">equiv_idmap</span>.<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Close</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">equiv_scope</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <span class="id" title="var">Question_3</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <span class="id" title="var">Exercise_1</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab7"></a><h1 class="section">Exercise 2</h1>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Section</span> <span class="id" title="var">Exercise_2</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Context</span> (<span class="id" title="var">A</span> : <span class="id" title="keyword">Type</span>) (<span class="id" title="var">P</span> : <span class="id" title="var">Σ</span> <span class="id" title="var">A</span> → <span class="id" title="keyword">Type</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab8"></a><h2 class="section">Question 1</h2>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Section</span> <span class="id" title="var">Question_1</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Let</span> ψ '(<span class="id" title="var">q</span>, <span class="id" title="var">a</span>) := <span class="id" title="var">transport</span> <span class="id" title="var">P</span> (<span class="id" title="var">merid</span> <span class="id" title="var">a</span>) <span class="id" title="var">q</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Proposition</span> <span class="id" title="var">q_2_1</span> :<br/>
+&nbsp;&nbsp;{<span class="id" title="var">x</span> : <span class="id" title="var">Σ</span> <span class="id" title="var">A</span> &amp; <span class="id" title="var">P</span> <span class="id" title="var">x</span>} ≃ <span class="id" title="var">Pushout</span> <span class="id" title="var">fst</span> ψ.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <span class="id" title="var">Question_1</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <span class="id" title="var">Exercise_2</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab9"></a><h1 class="section">Exercise 3</h1>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Section</span> <span class="id" title="var">Exercise_3</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Context</span> (<span class="id" title="var">A</span> : <span class="id" title="keyword">Type</span>) (<span class="id" title="var">μ</span> : <span class="id" title="var">A</span> × <span class="id" title="var">A</span> → <span class="id" title="var">A</span>).<br/>
+
+<br/>
+<span class="id" title="keyword">Notation</span> &quot;'μ'" := <span class="id" title="var">μ</span>.<br/>
+<span class="id" title="keyword">Notation</span> &quot;'μ' ( a , b )" := (<span class="id" title="var">μ</span> (<span class="id" title="var">pair</span> <span class="id" title="var">a</span> <span class="id" title="var">b</span>)) (<span class="id" title="var">format</span> "'μ' ( a , b )").<br/>
+<span class="id" title="keyword">Notation</span> &quot;'μ' ( a , '_' )" := (<span class="id" title="keyword">fun</span> <span class="id" title="var">x</span> ⇒ <span class="id" title="var">μ</span>(<span class="id" title="var">a</span>,<span class="id" title="var">x</span>)) (<span class="id" title="var">format</span> "'μ' ( a , _ )").<br/>
+<span class="id" title="keyword">Notation</span> &quot;'μ' ( '_' , a )" := (<span class="id" title="keyword">fun</span> <span class="id" title="var">x</span> ⇒ <span class="id" title="var">μ</span>(<span class="id" title="var">x</span>,<span class="id" title="var">a</span>)) (<span class="id" title="var">format</span> "'μ' ( _ , a )").<br/>
+
+<br/>
+<span class="id" title="keyword">Context</span> `(<span class="id" title="keyword">∀</span> <span class="id" title="var">a</span>, <span class="id" title="var">IsEquiv</span> <span class="id" title="var">μ</span>(<span class="id" title="var">a</span>,<span class="id" title="var">_</span>)).<br/>
+<span class="id" title="keyword">Context</span> `(<span class="id" title="keyword">∀</span> <span class="id" title="var">a</span>, <span class="id" title="var">IsEquiv</span> <span class="id" title="var">μ</span>(<span class="id" title="var">_</span>,<span class="id" title="var">a</span>)).<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">P</span> : <span class="id" title="var">Σ</span> <span class="id" title="var">A</span> → <span class="id" title="keyword">Type</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">srapply</span> <span class="id" title="var">Susp_rec</span>; <span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">exact</span> <span class="id" title="var">A</span>.<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">exact</span> <span class="id" title="var">A</span>.<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">intros</span> <span class="id" title="var">a</span>. <span class="id" title="tactic">exact</span> (<span class="id" title="var">ua</span>^-1 <span class="id" title="var">μ</span>(<span class="id" title="var">_</span>,<span class="id" title="var">a</span>)).<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab10"></a><h2 class="section">Question 1</h2>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Section</span> <span class="id" title="var">Question_1</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Fact</span> <span class="id" title="var">hottbook_lemma_2_10_5</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">∀</span> (<span class="id" title="var">A</span> : <span class="id" title="keyword">Type</span>) (<span class="id" title="var">B</span> : <span class="id" title="var">A</span> → <span class="id" title="keyword">Type</span>) (<span class="id" title="var">x</span> <span class="id" title="var">y</span> : <span class="id" title="var">A</span>) (<span class="id" title="var">p</span> : <span class="id" title="var">x</span> = <span class="id" title="var">y</span>) (<span class="id" title="var">u</span> : <span class="id" title="var">B</span> <span class="id" title="var">x</span>),<br/>
+&nbsp;&nbsp;<span class="id" title="var">transport</span> <span class="id" title="var">B</span> <span class="id" title="var">p</span> <span class="id" title="var">u</span> = <span class="id" title="var">ua</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> (<span class="id" title="var">ap</span> <span class="id" title="var">B</span> <span class="id" title="var">p</span>) <span class="id" title="var">u</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">q_3_1</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">a</span> <span class="id" title="var">b</span> : <span class="id" title="var">A</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="var">transport</span> <span class="id" title="var">P</span> (<span class="id" title="var">merid</span> <span class="id" title="var">b</span>) <span class="id" title="var">a</span> = <span class="id" title="var">μ</span>(<span class="id" title="var">a</span>,<span class="id" title="var">b</span>).<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">a</span> <span class="id" title="var">b</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">hottbook_lemma_2_10_5</span>. <span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">Susp_rec_beta_merid</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;<span class="inlinecode"><span class="id" title="var">transport_path_universe</span></span>&nbsp;is&nbsp;the&nbsp;propositional&nbsp;computation<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rule&nbsp;of&nbsp;univalence&nbsp;(see&nbsp;section&nbsp;2.10&nbsp;of&nbsp;the&nbsp;HoTT&nbsp;book)&nbsp;*)</span><br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">transport_path_universe</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exact</span> <span class="id" title="var">idpath</span>.<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <span class="id" title="var">Question_1</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab11"></a><h2 class="section">Question 2</h2>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Section</span> <span class="id" title="var">Question_2</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Let</span> ψ '(<span class="id" title="var">q</span>, <span class="id" title="var">a</span>) := <span class="id" title="var">transport</span> <span class="id" title="var">P</span> (<span class="id" title="var">merid</span> <span class="id" title="var">a</span>) <span class="id" title="var">q</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">path_</span>ψ<span class="id" title="var">_μ</span> :<br/>
+&nbsp;&nbsp;ψ = <span class="id" title="var">μ</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;<span class="inlinecode"><span class="id" title="var">equiv_path_arrow</span></span>&nbsp;is&nbsp;function&nbsp;extensionality&nbsp;*)</span><br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">equiv_path_arrow</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">p</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">p</span> <span class="id" title="keyword">as</span> (<span class="id" title="var">a</span>, <span class="id" title="var">b</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> ψ. <span class="id" title="tactic">apply</span> <span class="id" title="var">q_3_1</span>.<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">q_3_2</span> :<br/>
+&nbsp;&nbsp;{<span class="id" title="var">x</span> : <span class="id" title="var">Σ</span> <span class="id" title="var">A</span> &amp; <span class="id" title="var">P</span> <span class="id" title="var">x</span>} ≃ <span class="id" title="var">Pushout</span> <span class="id" title="var">fst</span> <span class="id" title="var">μ</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">refine</span> (<span class="id" title="var">_</span> <span class="id" title="var">oE</span> (<span class="id" title="var">q_2_1</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span>)).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> &lt;- <span class="id" title="var">path_</span>ψ<span class="id" title="var">_μ</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exact</span> <span class="id" title="var">equiv_idmap</span>.<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <span class="id" title="var">Question_2</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab12"></a><h2 class="section">Question 3</h2>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Let</span> <span class="id" title="var">s</span> := @<span class="id" title="var">span</span> <span class="id" title="var">A</span> (<span class="id" title="var">A</span> × <span class="id" title="var">A</span>) <span class="id" title="var">A</span> <span class="id" title="var">fst</span> <span class="id" title="var">μ</span>.<br/>
+<span class="id" title="keyword">Let</span> <span class="id" title="var">s'</span> := @<span class="id" title="var">span</span> <span class="id" title="var">A</span> (<span class="id" title="var">A</span> × <span class="id" title="var">A</span>) <span class="id" title="var">A</span> <span class="id" title="var">fst</span> <span class="id" title="var">snd</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Section</span> <span class="id" title="var">Question_3</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Let</span> <span class="id" title="var">ε</span> : <span class="id" title="var">A</span> × <span class="id" title="var">A</span> → <span class="id" title="var">A</span> × <span class="id" title="var">A</span> := <span class="id" title="keyword">fun</span> '(<span class="id" title="var">a</span>, <span class="id" title="var">b</span>) ⇒ (<span class="id" title="var">a</span>, <span class="id" title="var">μ</span>(<span class="id" title="var">a</span>,<span class="id" title="var">_</span>) <span class="id" title="var">b</span>).<br/>
+<span class="id" title="keyword">Let</span> <span class="id" title="var">ε_inv</span> : <span class="id" title="var">A</span> × <span class="id" title="var">A</span> → <span class="id" title="var">A</span> × <span class="id" title="var">A</span> := <span class="id" title="keyword">fun</span> '(<span class="id" title="var">a</span>, <span class="id" title="var">b</span>) ⇒ (<span class="id" title="var">a</span>, <span class="id" title="var">μ</span>(<span class="id" title="var">a</span>,<span class="id" title="var">_</span>)^-1 <span class="id" title="var">b</span>).<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">q_3_3</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">s</span> = <span class="id" title="var">s'</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;We&nbsp;use&nbsp;the&nbsp;analysis&nbsp;of&nbsp;equality&nbsp;between&nbsp;spans&nbsp;*)</span><br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">path_span</span>. <span class="id" title="var">unshelve</span> <span class="id" title="tactic">econstructor</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;Left&nbsp;equivalence&nbsp;*)</span><br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">exact</span> <span class="id" title="var">equiv_idmap</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;Apex&nbsp;equivalence&nbsp;*)</span><br/>
+&nbsp;&nbsp;* <span class="id" title="var">unshelve</span> <span class="id" title="tactic">econstructor</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">exact</span> <span class="id" title="var">ε</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">apply</span> <span class="id" title="var">isequiv_adjointify</span> <span class="id" title="keyword">with</span> <span class="id" title="var">ε_inv</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">unfold</span> <span class="id" title="var">Sect</span>. <span class="id" title="tactic">intros</span> [<span class="id" title="var">a</span> <span class="id" title="var">b</span>]. <span class="id" title="tactic">unfold</span> <span class="id" title="var">ε</span>, <span class="id" title="var">ε_inv</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;μ(a,_)&nbsp;is&nbsp;an&nbsp;equivalence&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> (<span class="id" title="var">eisretr</span> <span class="id" title="var">μ</span>(<span class="id" title="var">a</span>,<span class="id" title="var">_</span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">exact</span> <span class="id" title="var">idpath</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ <span class="id" title="tactic">unfold</span> <span class="id" title="var">Sect</span>. <span class="id" title="tactic">intros</span> [<span class="id" title="var">a</span> <span class="id" title="var">b</span>]. <span class="id" title="tactic">unfold</span> <span class="id" title="var">ε</span>, <span class="id" title="var">ε_inv</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;μ(a,_)&nbsp;is&nbsp;an&nbsp;equivalence&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> (<span class="id" title="var">eissect</span> <span class="id" title="var">μ</span>(<span class="id" title="var">a</span>,<span class="id" title="var">_</span>)).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">exact</span> <span class="id" title="var">idpath</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;Right&nbsp;equivalence&nbsp;*)</span><br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">exact</span> <span class="id" title="var">equiv_idmap</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;Left&nbsp;coherence&nbsp;*)</span><br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">equiv_path_arrow</span>. <span class="id" title="tactic">exact</span> <span class="id" title="var">idpath</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;Right&nbsp;coherence&nbsp;*)</span><br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">equiv_path_arrow</span>. <span class="id" title="tactic">exact</span> <span class="id" title="var">idpath</span>.<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <span class="id" title="var">Question_3</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab13"></a><h2 class="section">Question 4</h2>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Section</span> <span class="id" title="var">Question_4</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">q_3_4</span> :<br/>
+&nbsp;&nbsp;{<span class="id" title="var">x</span> : <span class="id" title="var">Σ</span> <span class="id" title="var">A</span> &amp; <span class="id" title="var">P</span> <span class="id" title="var">x</span>} ≃ <span class="id" title="var">A</span> ∗ <span class="id" title="var">A</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">refine</span> (<span class="id" title="var">_</span> <span class="id" title="var">oE</span> <span class="id" title="var">q_3_2</span>).<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;<span class="inlinecode"><span class="id" title="var">equiv_pushout</span></span>&nbsp;gives&nbsp;an&nbsp;analysis&nbsp;of&nbsp;equivalence&nbsp;between&nbsp;pushouts<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;as&nbsp;defined&nbsp;in&nbsp;the&nbsp;HoTT&nbsp;library,&nbsp;which&nbsp;will&nbsp;allow&nbsp;us&nbsp;to&nbsp;reduce&nbsp;it<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;the&nbsp;analysis&nbsp;of&nbsp;equality&nbsp;between&nbsp;spans&nbsp;of&nbsp;<span class="inlinecode"><span class="id" title="var">q_3_3</span></span>&nbsp;*)</span><br/>
+&nbsp;&nbsp;<span class="id" title="tactic">refine</span> (<span class="id" title="var">_</span> <span class="id" title="var">oE</span> <span class="id" title="var">equiv_pushout</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span>).<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">exact</span> <span class="id" title="var">equiv_idmap</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;Left&nbsp;coherence...&nbsp;*)</span><br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">eapply</span> <span class="id" title="var">coherence_left</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;...and&nbsp;right&nbsp;coherence...&nbsp;*)</span><br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">eapply</span> <span class="id" title="var">coherence_right</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">Unshelve</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;...that&nbsp;we&nbsp;get&nbsp;from&nbsp;<span class="inlinecode"><span class="id" title="var">q_3_3</span></span>&nbsp;*)</span><br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> (<span class="id" title="var">path_span</span>^-1 <span class="id" title="var">q_3_3</span>).<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <span class="id" title="var">Question_4</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <span class="id" title="var">Exercise_3</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab14"></a><h1 class="section">Exercise 4</h1>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Section</span> <span class="id" title="var">Exercise_4</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Open</span> <span class="id" title="keyword">Scope</span> <span class="id" title="var">pointed_scope</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Class</span> <span class="id" title="var">IsHType</span> (<span class="id" title="var">carrier</span> : <span class="id" title="var">pType</span>) := {<br/>
+&nbsp;&nbsp;<span class="id" title="var">mult</span> : <span class="id" title="var">carrier</span> × <span class="id" title="var">carrier</span> → <span class="id" title="var">carrier</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="var">unit_left</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">x</span>, <span class="id" title="var">mult</span> (<span class="id" title="var">point</span> <span class="id" title="var">carrier</span>, <span class="id" title="var">x</span>) = <span class="id" title="var">x</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="var">unit_right</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">x</span>, <span class="id" title="var">mult</span> (<span class="id" title="var">x</span>, <span class="id" title="var">point</span> <span class="id" title="var">carrier</span>) = <span class="id" title="var">x</span>;<br/>
+}.<br/>
+
+<br/>
+<span class="id" title="keyword">Class</span> <span class="id" title="var">IsConnected</span> <span class="id" title="var">A</span> := <span class="id" title="var">connected</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span> : <span class="id" title="var">A</span>, |<span class="id" title="var">x</span> = <span class="id" title="var">y</span>|.<br/>
+
+<br/>
+<span class="id" title="keyword">Context</span> (<span class="id" title="var">A</span> : <span class="id" title="var">pType</span>) `{<span class="id" title="var">IsHType</span> <span class="id" title="var">A</span>} `{<span class="id" title="var">IsConnected</span> <span class="id" title="var">A</span>}.<br/>
+
+<br/>
+<span class="id" title="keyword">Notation</span> <span class="id" title="var">e</span> := (<span class="id" title="var">point</span> <span class="id" title="var">A</span>).<br/>
+<span class="id" title="keyword">Notation</span> &quot;'μ'" := <span class="id" title="var">mult</span>.<br/>
+<span class="id" title="keyword">Notation</span> &quot;'μ' ( a , b )" := (<span class="id" title="var">μ</span> (<span class="id" title="var">pair</span> <span class="id" title="var">a</span> <span class="id" title="var">b</span>)) (<span class="id" title="var">format</span> "'μ' ( a , b )").<br/>
+<span class="id" title="keyword">Notation</span> &quot;'μ' ( a , '_' )" := (<span class="id" title="keyword">fun</span> <span class="id" title="var">x</span> ⇒ <span class="id" title="var">μ</span>(<span class="id" title="var">a</span>,<span class="id" title="var">x</span>)) (<span class="id" title="var">format</span> "'μ' ( a , _ )").<br/>
+<span class="id" title="keyword">Notation</span> &quot;'μ' ( '_' , a )" := (<span class="id" title="keyword">fun</span> <span class="id" title="var">x</span> ⇒ <span class="id" title="var">μ</span>(<span class="id" title="var">x</span>,<span class="id" title="var">a</span>)) (<span class="id" title="var">format</span> "'μ' ( _ , a )").<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab15"></a><h2 class="section">Question 1</h2>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Section</span> <span class="id" title="var">Question_1</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+I could not find a proper induction principle for the
+    propositional truncation in the HoTT library, thus we
+    assume the one seen in course. 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Fact</span> <span class="id" title="var">merely_ind</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">∀</span> (<span class="id" title="var">A</span> : <span class="id" title="keyword">Type</span>) (<span class="id" title="var">P</span> : |<span class="id" title="var">A</span>| → <span class="id" title="keyword">Type</span>),<br/>
+&nbsp;&nbsp;(<span class="id" title="keyword">∀</span> <span class="id" title="var">x</span> : <span class="id" title="var">A</span>, <span class="id" title="var">P</span> (<span class="id" title="var">tr</span> <span class="id" title="var">x</span>)) →<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">∀</span> <span class="id" title="var">x</span> : |<span class="id" title="var">A</span>|, <span class="id" title="var">P</span> <span class="id" title="var">x</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+A consequence of the induction principle is that
+    for any type B, assuming |B| amounts to assuming B. 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">destruct_merely</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">B</span>,<br/>
+&nbsp;&nbsp;|<span class="id" title="var">B</span>| → <span class="id" title="var">B</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">B</span>. <span class="id" title="tactic">apply</span> (<span class="id" title="var">merely_ind</span> <span class="id" title="var">B</span>). <span class="id" title="tactic">exact</span> <span class="id" title="var">idmap</span>.<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">q_4_1</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">x</span> : <span class="id" title="var">A</span>,<br/>
+&nbsp;&nbsp;|<span class="id" title="var">μ</span>(<span class="id" title="var">x</span>,<span class="id" title="var">_</span>) = <span class="id" title="var">idmap</span>| × |<span class="id" title="var">μ</span>(<span class="id" title="var">_</span>,<span class="id" title="var">x</span>) = <span class="id" title="var">idmap</span>|.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">x</span>. <span class="id" title="tactic">split</span>.<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">apply</span> <span class="id" title="var">tr</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">equiv_path_arrow</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> "==". <span class="id" title="tactic">intros</span> <span class="id" title="var">a</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">pose</span> <span class="id" title="var">proof</span> (<span class="id" title="var">connected</span> <span class="id" title="var">μ</span>(<span class="id" title="var">x</span>,<span class="id" title="var">a</span>) <span class="id" title="var">a</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">now</span> <span class="id" title="tactic">apply</span> <span class="id" title="var">destruct_merely</span>.<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">apply</span> <span class="id" title="var">tr</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">apply</span> <span class="id" title="var">equiv_path_arrow</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> "==". <span class="id" title="tactic">intros</span> <span class="id" title="var">a</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">pose</span> <span class="id" title="var">proof</span> (<span class="id" title="var">connected</span> <span class="id" title="var">μ</span>(<span class="id" title="var">a</span>,<span class="id" title="var">x</span>) <span class="id" title="var">a</span>).<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">now</span> <span class="id" title="tactic">apply</span> <span class="id" title="var">destruct_merely</span>.<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <span class="id" title="var">Question_1</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab16"></a><h2 class="section">Question 2</h2>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Instance</span> <span class="id" title="var">isequiv_μ_left</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">∀</span> <span class="id" title="var">x</span>, <span class="id" title="var">IsEquiv</span> <span class="id" title="var">μ</span>(<span class="id" title="var">x</span>,<span class="id" title="var">_</span>).<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">x</span>. <span class="id" title="tactic">destruct</span> (<span class="id" title="var">q_4_1</span> <span class="id" title="var">x</span>) <span class="id" title="keyword">as</span> [<span class="id" title="var">Hl</span> <span class="id" title="var">Hr</span>].<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> (<span class="id" title="var">destruct_merely</span> <span class="id" title="var">_</span>) <span class="id" title="tactic">in</span> <span class="id" title="var">Hl</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">Hl</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">isequiv_idmap</span>.<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Instance</span> <span class="id" title="var">isequiv_μ_right</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="keyword">∀</span> <span class="id" title="var">x</span>, <span class="id" title="var">IsEquiv</span> <span class="id" title="var">μ</span>(<span class="id" title="var">_</span>,<span class="id" title="var">x</span>).<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">intros</span> <span class="id" title="var">x</span>. <span class="id" title="tactic">destruct</span> (<span class="id" title="var">q_4_1</span> <span class="id" title="var">x</span>) <span class="id" title="keyword">as</span> [<span class="id" title="var">Hl</span> <span class="id" title="var">Hr</span>].<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">apply</span> (<span class="id" title="var">destruct_merely</span> <span class="id" title="var">_</span>) <span class="id" title="tactic">in</span> <span class="id" title="var">Hr</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">Hr</span>. <span class="id" title="tactic">apply</span> <span class="id" title="var">isequiv_idmap</span>.<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab17"></a><h2 class="section">Question 3</h2>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Section</span> <span class="id" title="var">Question_3</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Short name for the equivalence obtained in q_3_4,
+    instanciated to our H-type <span class="inlinecode"><span class="id" title="var">A</span></span>. 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Let</span> <span class="id" title="var">ε</span> := (<span class="id" title="var">q_3_4</span> <span class="id" title="var">A</span> <span class="id" title="var">μ</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span>).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+First, we need a few definitions to make our operations
+    live in the pointed universe. 
+<div class="paragraph"> </div>
+
+<a name="lab18"></a><h3 class="section">Pointed Σ-types</h3>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">psig</span> {<span class="id" title="var">X</span> : <span class="id" title="var">pType</span>}<br/>
+&nbsp;&nbsp;(<span class="id" title="var">P</span> : <span class="id" title="var">X</span> → <span class="id" title="keyword">Type</span>) `{<span class="id" title="var">pointP</span> : <span class="id" title="var">IsPointed</span> (<span class="id" title="var">P</span> (<span class="id" title="var">point</span> <span class="id" title="var">X</span>))} : <span class="id" title="var">pType</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">unshelve</span> <span class="id" title="tactic">econstructor</span>.<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">exact</span> (<span class="id" title="var">sig</span> <span class="id" title="var">P</span>).<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">apply</span> <span class="id" title="var">ispointed_sigma</span>.<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab19"></a><h3 class="section">Pointed joins</h3>
+
+<div class="paragraph"> </div>
+
+ Note that we do not use a general definition for pointed joins:
+    instead we only define the pointed <span class="inlinecode"><span class="id" title="var">A</span></span> <span class="inlinecode">∗</span> <span class="inlinecode"><span class="id" title="var">A</span></span>, so that we can choose
+    a specific basepoint (this will allow us to prove ε to be a
+    pointed equivalence, and not just a "mere" equivalence. 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">pjoin</span> : <span class="id" title="var">pType</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">unshelve</span> <span class="id" title="tactic">econstructor</span>.<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">exact</span> (<span class="id" title="var">A</span> ∗ <span class="id" title="var">A</span>).<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">exact</span> (<span class="id" title="var">ε</span> (<span class="id" title="var">North</span>; <span class="id" title="var">e</span>)).<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab20"></a><h3 class="section">Fiber sequences</h3>
+
+<div class="paragraph"> </div>
+
+ We also need to define fiber sequences, since they are
+    not implemented in the HoTT library. 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">fib</span> {<span class="id" title="var">X</span> <span class="id" title="var">Y</span> : <span class="id" title="var">pType</span>} (<span class="id" title="var">f</span> : <span class="id" title="var">X</span> -&gt;* <span class="id" title="var">Y</span>) : <span class="id" title="var">pType</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">unshelve</span> <span class="id" title="tactic">econstructor</span>.<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">exact</span> (<span class="id" title="var">hfiber</span> <span class="id" title="var">f</span> (<span class="id" title="var">point</span> <span class="id" title="var">Y</span>)).<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">exact</span> (<span class="id" title="var">point</span> <span class="id" title="var">X</span>; <span class="id" title="var">point_eq</span> <span class="id" title="var">f</span>).<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">fib_proj</span> {<span class="id" title="var">X</span> <span class="id" title="var">Y</span> : <span class="id" title="var">pType</span>} (<span class="id" title="var">f</span> : <span class="id" title="var">X</span> -&gt;* <span class="id" title="var">Y</span>) : <span class="id" title="var">fib</span> <span class="id" title="var">f</span> -&gt;* <span class="id" title="var">X</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">unshelve</span> <span class="id" title="tactic">econstructor</span>.<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">intros</span> <span class="id" title="var">x</span>. <span class="id" title="tactic">destruct</span> <span class="id" title="var">x</span> <span class="id" title="keyword">as</span> [<span class="id" title="var">x</span> <span class="id" title="var">_</span>]. <span class="id" title="tactic">exact</span> <span class="id" title="var">x</span>.<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">exact</span> <span class="id" title="var">idpath</span>.<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">IsFiberSeq</span> {<span class="id" title="var">X</span> <span class="id" title="var">Y</span> <span class="id" title="var">Z</span> : <span class="id" title="var">pType</span>} (<span class="id" title="var">f</span> : <span class="id" title="var">X</span> -&gt;* <span class="id" title="var">Y</span>) (<span class="id" title="var">g</span> : <span class="id" title="var">Y</span> -&gt;* <span class="id" title="var">Z</span>) :=<br/>
+&nbsp;&nbsp;{<span class="id" title="var">p</span> : <span class="id" title="var">X</span> = <span class="id" title="var">fib</span> <span class="id" title="var">g</span> &amp; <span class="id" title="var">transport</span> (<span class="id" title="keyword">fun</span> <span class="id" title="var">B</span> ⇒ <span class="id" title="var">B</span> -&gt;* <span class="id" title="var">Y</span>) <span class="id" title="var">p</span> <span class="id" title="var">f</span> = <span class="id" title="var">fib_proj</span> <span class="id" title="var">g</span>}.<br/>
+
+<br/>
+<span class="id" title="keyword">Record</span> <span class="id" title="var">FiberSeq</span> (<span class="id" title="var">X</span> <span class="id" title="var">Y</span> <span class="id" title="var">Z</span> : <span class="id" title="var">pType</span>) := {<br/>
+&nbsp;&nbsp;<span class="id" title="var">fiberseq_proj</span> : <span class="id" title="var">X</span> -&gt;* <span class="id" title="var">Y</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="var">fiberseq_map</span> : <span class="id" title="var">Y</span> -&gt;* <span class="id" title="var">Z</span>;<br/>
+&nbsp;&nbsp;<span class="id" title="var">isfiberseq</span> : <span class="id" title="var">IsFiberSeq</span> <span class="id" title="var">fiberseq_proj</span> <span class="id" title="var">fiberseq_map</span>;<br/>
+}.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+One can make a fiber sequence from a fibration, i.e.
+    a type family <span class="inlinecode"><span class="id" title="var">C</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">X</span></span> <span class="inlinecode">→</span> <span class="inlinecode"><span class="id" title="keyword">Type</span></span>, whenever <span class="inlinecode"><span class="id" title="var">X</span></span> is pointed
+    by <span class="inlinecode">∗</span> and <span class="inlinecode"><span class="id" title="var">C</span>(∗)</span> is pointed as well. 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Proposition</span> <span class="id" title="var">fibration_fiberseq</span> {<span class="id" title="var">X</span> : <span class="id" title="var">pType</span>}<br/>
+&nbsp;&nbsp;(<span class="id" title="var">C</span> : <span class="id" title="var">X</span> → <span class="id" title="keyword">Type</span>) `{<span class="id" title="var">ispointed_C</span> : <span class="id" title="var">IsPointed</span> (<span class="id" title="var">C</span> (<span class="id" title="var">point</span> <span class="id" title="var">X</span>))} :<br/>
+&nbsp;&nbsp;@<span class="id" title="var">FiberSeq</span> {| <span class="id" title="var">pointed_type</span> := <span class="id" title="var">C</span> (<span class="id" title="var">point</span> <span class="id" title="var">X</span>);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">ispointed_type</span> := <span class="id" title="var">ispointed_C</span> |}<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="id" title="var">psig</span> <span class="id" title="var">C</span>) <span class="id" title="var">X</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The trick then is to define the fibration <span class="inlinecode"><span class="id" title="var">C</span></span> so that
+    it coincides with the <span class="inlinecode"><span class="id" title="var">P</span></span> from exercise 3. 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">C</span> : <span class="id" title="var">psusp</span> <span class="id" title="var">A</span> → <span class="id" title="keyword">Type</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">srapply</span> <span class="id" title="var">Susp_rec</span>; <span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">exact</span> <span class="id" title="var">A</span>.<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">exact</span> <span class="id" title="var">A</span>.<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">intros</span> <span class="id" title="var">a</span>. <span class="id" title="tactic">exact</span> (<span class="id" title="var">ua</span>^-1 <span class="id" title="var">μ</span>(<span class="id" title="var">_</span>,<span class="id" title="var">a</span>)).<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Instance</span> <span class="id" title="var">ispointed_C</span> : <span class="id" title="var">IsPointed</span> (<span class="id" title="var">C</span> (<span class="id" title="var">point</span> (<span class="id" title="var">psusp</span> <span class="id" title="var">A</span>))) := <span class="id" title="var">e</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+We use C to get a fiber sequence
+
+<div class="paragraph"> </div>
+
+      <span class="inlinecode"><span class="id" title="var">A</span></span> <span class="inlinecode">→∗</span> <span class="inlinecode">(<span class="id" title="var">x</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">ΣA</span>)</span> <span class="inlinecode">×</span> <span class="inlinecode"><span class="id" title="var">C</span>(<span class="id" title="var">x</span>)</span> <span class="inlinecode">→∗</span> <span class="inlinecode"><span class="id" title="var">ΣA</span></span> 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Let</span> σ := <span class="id" title="var">fibration_fiberseq</span> <span class="id" title="var">C</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Intuitively, it only remains to "rewrite" <span class="inlinecode">(<span class="id" title="var">x</span></span> <span class="inlinecode">:</span> <span class="inlinecode"><span class="id" title="var">ΣA</span>)</span> <span class="inlinecode">×</span> <span class="inlinecode"><span class="id" title="var">C</span>(<span class="id" title="var">x</span>)</span>
+    into <span class="inlinecode"><span class="id" title="var">A</span></span> <span class="inlinecode">∗</span> <span class="inlinecode"><span class="id" title="var">A</span></span> using ε to conclude. But we cannot do this
+    directly because we only have an equivalence of non-pointed
+    types, but sequences are defined on pointed types. 
+<div class="paragraph"> </div>
+
+ So we start by building a pointed equivalence from ε. 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">ε_pointed</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">psig</span> <span class="id" title="var">C</span> ≃* <span class="id" title="var">pjoin</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">unshelve</span> <span class="id" title="tactic">econstructor</span>.<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">exact</span> (<span class="id" title="var">pmap_from_point</span> <span class="id" title="var">ε</span> (<span class="id" title="var">North</span>; <span class="id" title="var">e</span>)).<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">apply</span> <span class="id" title="var">isequiv_adjointify</span> <span class="id" title="keyword">with</span> <span class="id" title="var">ε</span>^-1.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">apply</span> <span class="id" title="var">eisretr</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">apply</span> <span class="id" title="var">eissect</span>.<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Then we rewrite, and that's it!
+
+<div class="paragraph"> </div>
+
+    In fact we have to cheat a little bit: we use the lemma <span class="inlinecode"><span class="id" title="var">path_ptype</span></span>
+    to turn the pointed equivalence into a path in the universe of
+    pointed types, which follows from univalence with a bit of work. 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">q_4_3</span> :<br/>
+&nbsp;&nbsp;@<span class="id" title="var">FiberSeq</span> <span class="id" title="var">A</span> (<span class="id" title="var">pjoin</span>) (<span class="id" title="var">psusp</span> <span class="id" title="var">A</span>).<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> &lt;- (<span class="id" title="var">path_ptype</span> <span class="id" title="var">ε_pointed</span>).<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exact</span> σ.<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <span class="id" title="var">Question_3</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <span class="id" title="var">Exercise_4</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab21"></a><h1 class="section">Exercise 5</h1>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Section</span> <span class="id" title="var">Exercise_5</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab22"></a><h2 class="section">Question 1</h2>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Section</span> <span class="id" title="var">Question_1</span>.<br/>
+
+<br/>
+<span class="comment">(*&nbsp;<span class="inlinecode"><span class="id" title="var">S1</span></span>&nbsp;is&nbsp;the&nbsp;inductive&nbsp;definition&nbsp;of&nbsp;the&nbsp;circle,&nbsp;not&nbsp;to&nbsp;be&nbsp;confused<br/>
+&nbsp;&nbsp;&nbsp;with&nbsp;<span class="inlinecode"><span class="id" title="var">S</span>^1</span>&nbsp;which&nbsp;is&nbsp;the&nbsp;definition&nbsp;based&nbsp;on&nbsp;iterated&nbsp;suspension<br/>
+&nbsp;&nbsp;&nbsp;(though&nbsp;the&nbsp;two&nbsp;definitions&nbsp;are&nbsp;equivalent).&nbsp;*)</span><br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> ψ' : <span class="id" title="keyword">∀</span> <span class="id" title="var">x</span> : <span class="id" title="var">S1</span>, <span class="id" title="var">x</span> = <span class="id" title="var">x</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">srapply</span> <span class="id" title="var">S1_ind</span>; <span class="id" title="tactic">simpl</span>.<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">exact</span> <span class="id" title="var">loop</span>.<br/>
+&nbsp;&nbsp;* <span class="comment">(*&nbsp;Lemma&nbsp;2.11.2&nbsp;of&nbsp;the&nbsp;HoTT&nbsp;book&nbsp;*)</span><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> <span class="id" title="var">transport_paths_lr</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="id" title="var">hott_simpl</span>.<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <span class="id" title="var">Question_1</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab23"></a><h2 class="section">Question 2</h2>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Section</span> <span class="id" title="var">Question_2</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Let</span> ψ := <span class="id" title="var">path_forall</span> <span class="id" title="var">_</span> <span class="id" title="var">_</span> ψ'.<br/>
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">μ</span> : <span class="id" title="var">S1</span> → <span class="id" title="var">S1</span> → <span class="id" title="var">S1</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">srapply</span> <span class="id" title="var">S1_rec</span>.<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">exact</span> <span class="id" title="var">idmap</span>.<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">exact</span> ψ.<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Proposition</span> <span class="id" title="var">q_5_2</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">x</span> : <span class="id" title="var">S1</span>,<br/>
+&nbsp;&nbsp;(<span class="id" title="var">μ</span> <span class="id" title="var">x</span> <span class="id" title="var">base</span> = <span class="id" title="var">x</span>) × (<span class="id" title="var">μ</span> <span class="id" title="var">base</span> <span class="id" title="var">x</span> = <span class="id" title="var">x</span>).<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <span class="id" title="var">Question_2</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab24"></a><h2 class="section">Question 3</h2>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Section</span> <span class="id" title="var">Question_3</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Pointed circle, built from the easy to manipulate
+    inductive definition. 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">pcircle</span> : <span class="id" title="var">pType</span> := <span class="id" title="var">Build_pType</span> <span class="id" title="var">S1</span> <span class="id" title="var">base</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Notation</span> &quot;'S1*'" := <span class="id" title="var">pcircle</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+With the previous question, we can prove that
+    the (pointed) circle is an HType. 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Instance</span> <span class="id" title="var">ishtype_pcircle</span> : <span class="id" title="var">IsHType</span> <span class="id" title="var">S1</span>*.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">unshelve</span> <span class="id" title="tactic">econstructor</span>.<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">intros</span> [<span class="id" title="var">x</span> <span class="id" title="var">y</span>]. <span class="id" title="tactic">exact</span> (<span class="id" title="var">μ</span> <span class="id" title="var">x</span> <span class="id" title="var">y</span>).<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">exact</span> <span class="id" title="var">idpath</span>.<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">simpl</span>. <span class="id" title="tactic">intros</span>. <span class="id" title="tactic">exact</span> (<span class="id" title="var">fst</span> (<span class="id" title="var">q_5_2</span> <span class="id" title="var">_</span>)).<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+The circle is connected. 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Instance</span> <span class="id" title="var">isconnected_pcircle</span> : <span class="id" title="var">IsConnected</span> <span class="id" title="var">S1</span>*.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+First we adapt the equivalence from <span class="inlinecode"><span class="id" title="var">q_1_3</span></span> to the inductive
+    definition of the circle. 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Let</span> <span class="id" title="var">ε</span> : <span class="id" title="var">S1</span> ∗ <span class="id" title="var">S1</span> ≃ <span class="id" title="var">S</span>^3.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">pose</span> <span class="id" title="var">proof</span> <span class="id" title="var">q_1_3</span> <span class="id" title="keyword">as</span> <span class="id" title="var">ε</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> (<span class="id" title="var">ua</span>^-1 <span class="id" title="var">Sph1_to_S1</span>) <span class="id" title="tactic">in</span> <span class="id" title="var">ε</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exact</span> <span class="id" title="var">ε</span>.<br/>
+<span class="id" title="keyword">Qed</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Then we define a 3-sphere with a custom basepoint, so that we can
+    build the pointed equivalence with the same trick of <span class="inlinecode"><span class="id" title="var">q_4_3</span></span>. 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Definition</span> <span class="id" title="var">psphere3</span> := <span class="id" title="var">Build_pType</span> (<span class="id" title="var">S</span>^3) (<span class="id" title="var">ε</span> (<span class="id" title="var">point</span> (<span class="id" title="var">pjoin</span> <span class="id" title="var">S1</span>*))).<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Now we can build the pointed equivalence. 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">q_1_3_pointed</span> :<br/>
+&nbsp;&nbsp;<span class="id" title="var">pjoin</span> (<span class="id" title="var">S1</span>*) ≃* <span class="id" title="var">psphere3</span>.<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="id" title="var">unshelve</span> <span class="id" title="tactic">econstructor</span>.<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">exact</span> (<span class="id" title="var">pmap_from_point</span> <span class="id" title="var">ε</span> (<span class="id" title="var">point</span> (<span class="id" title="var">pjoin</span> <span class="id" title="var">S1</span>*))).<br/>
+&nbsp;&nbsp;* <span class="id" title="tactic">apply</span> <span class="id" title="var">isequiv_adjointify</span> <span class="id" title="keyword">with</span> <span class="id" title="var">ε</span>^-1.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">apply</span> <span class="id" title="var">eisretr</span>.<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;- <span class="id" title="tactic">apply</span> <span class="id" title="var">eissect</span>.<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+Finally, we put everything together to get the Hopf fibration! 
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Theorem</span> <span class="id" title="var">q_5_3</span> :<br/>
+&nbsp;&nbsp;@<span class="id" title="var">FiberSeq</span> (<span class="id" title="var">S1</span>*) (<span class="id" title="var">psphere3</span>) (<span class="id" title="var">S</span>*^2).<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;Build&nbsp;the&nbsp;fiber&nbsp;sequence&nbsp;of&nbsp;<span class="inlinecode"><span class="id" title="var">q_4_3</span></span>&nbsp;*)</span><br/>
+&nbsp;&nbsp;<span class="id" title="tactic">pose</span> <span class="id" title="var">proof</span> (<span class="id" title="var">q_4_3</span> <span class="id" title="var">S1</span>*) <span class="id" title="keyword">as</span> σ.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;Rewrite&nbsp;using&nbsp;the&nbsp;equivalence&nbsp;of&nbsp;<span class="inlinecode"><span class="id" title="var">q_1_3</span></span>&nbsp;*)</span><br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> &lt;- (<span class="id" title="var">path_ptype</span> <span class="id" title="var">q_1_3_pointed</span>).<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;Turn&nbsp;the&nbsp;inductive&nbsp;pointed&nbsp;circle&nbsp;inside&nbsp;the&nbsp;2-sphere<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;into&nbsp;its&nbsp;iterated&nbsp;pointed&nbsp;suspension&nbsp;version&nbsp;*)</span><br/>
+&nbsp;&nbsp;<span class="id" title="tactic">unfold</span> <span class="id" title="var">pcircle</span> <span class="id" title="tactic">in</span> σ <span class="id" title="tactic">at</span> 3.<br/>
+&nbsp;&nbsp;<span class="id" title="tactic">rewrite</span> &lt;- (<span class="id" title="var">path_ptype</span> <span class="id" title="var">pequiv_pSph1_to_S1</span>) <span class="id" title="tactic">in</span> σ.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;That's&nbsp;it!&nbsp;*)</span><br/>
+&nbsp;&nbsp;<span class="id" title="tactic">exact</span> σ.<br/>
+<span class="id" title="keyword">Defined</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <span class="id" title="var">Question_3</span>.<br/>
+
+<br/>
+</div>
+
+<div class="doc">
+<a name="lab25"></a><h2 class="section">Question 4</h2>
+
+</div>
+<div class="code">
+
+<br/>
+<span class="id" title="keyword">Section</span> <span class="id" title="var">Question_4</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">Lemma</span> <span class="id" title="var">q_5_4</span> : <span class="id" title="keyword">∀</span> <span class="id" title="var">n</span>,<br/>
+&nbsp;&nbsp;<span class="id" title="var">Pi</span> <span class="id" title="var">n</span> (<span class="id" title="var">S</span>*^3) = <span class="id" title="var">Pi</span> <span class="id" title="var">n</span> (<span class="id" title="var">S</span>*^2).<br/>
+<span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;By&nbsp;the&nbsp;argument&nbsp;given&nbsp;in&nbsp;the&nbsp;course&nbsp;to&nbsp;illustrate&nbsp;lemma&nbsp;29,<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;which&nbsp;uses&nbsp;the&nbsp;Hopf&nbsp;fibration&nbsp;built&nbsp;in&nbsp;<span class="inlinecode"><span class="id" title="var">q_5_3</span></span>.&nbsp;*)</span><br/>
+<span class="id" title="var">Admitted</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <span class="id" title="var">Question_4</span>.<br/>
+
+<br/>
+<span class="id" title="keyword">End</span> <span class="id" title="var">Exercise_5</span>.<br/>
+</div>
+<hr/>This page has been generated by <a href="http://coq.inria.fr/">coqdoc</a>
+</div>
+
+</div>
+
+</body>
+</html>
