@@ -17,7 +17,7 @@
 <div id="main">
 
 <div class="code">
-<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">HoTT</span> <span class="id" title="var">Group</span> <span class="id" title="var">Join</span> <span class="id" title="var">UnivalenceAxiom</span>.<br/>
+<span class="id" title="keyword">Require</span> <span class="id" title="keyword">Import</span> <span class="id" title="var">HoTT</span> <span class="id" title="var">Join</span> <span class="id" title="var">UnivalenceAxiom</span>.<br/>
 
 <br/>
 
@@ -750,7 +750,7 @@ A consequence of the induction principle is that
 </div>
 
 <div class="doc">
-Short name for the equivalence obtained in q_3_4,
+Short name for the equivalence obtained in <span class="inlinecode"><span class="id" title="var">q_3_4</span></span>,
     instanciated to our H-type <span class="inlinecode"><span class="id" title="var">A</span></span>. 
 </div>
 <div class="code">
@@ -976,13 +976,19 @@ Then we rewrite, and that's it!
 <span class="id" title="keyword">Section</span> <span class="id" title="var">Question_1</span>.<br/>
 
 <br/>
-<span class="comment">(*&nbsp;<span class="inlinecode"><span class="id" title="var">S1</span></span>&nbsp;is&nbsp;the&nbsp;inductive&nbsp;definition&nbsp;of&nbsp;the&nbsp;circle,&nbsp;not&nbsp;to&nbsp;be&nbsp;confused<br/>
-&nbsp;&nbsp;&nbsp;with&nbsp;<span class="inlinecode"><span class="id" title="var">S</span>^1</span>&nbsp;which&nbsp;is&nbsp;the&nbsp;definition&nbsp;based&nbsp;on&nbsp;iterated&nbsp;suspension<br/>
-&nbsp;&nbsp;&nbsp;(though&nbsp;the&nbsp;two&nbsp;definitions&nbsp;are&nbsp;equivalent).&nbsp;*)</span><br/>
+</div>
+
+<div class="doc">
+<span class="inlinecode"><span class="id" title="var">S1</span></span> is the inductive definition of the circle, not to be confused
+    with <span class="inlinecode"><span class="id" title="var">S</span>^1</span> which is the definition based on iterated suspension
+    (though the two definitions are equivalent). 
+</div>
+<div class="code">
 
 <br/>
 <span class="id" title="keyword">Definition</span> ψ' : <span class="id" title="keyword">∀</span> <span class="id" title="var">x</span> : <span class="id" title="var">S1</span>, <span class="id" title="var">x</span> = <span class="id" title="var">x</span>.<br/>
 <span class="id" title="keyword">Proof</span>.<br/>
+&nbsp;&nbsp;<span class="comment">(*&nbsp;By&nbsp;induction&nbsp;on&nbsp;circles&nbsp;*)</span><br/>
 &nbsp;&nbsp;<span class="id" title="var">srapply</span> <span class="id" title="var">S1_ind</span>; <span class="id" title="tactic">simpl</span>.<br/>
 &nbsp;&nbsp;* <span class="id" title="tactic">exact</span> <span class="id" title="var">loop</span>.<br/>
 &nbsp;&nbsp;* <span class="comment">(*&nbsp;Lemma&nbsp;2.11.2&nbsp;of&nbsp;the&nbsp;HoTT&nbsp;book&nbsp;*)</span><br/>

@@ -494,7 +494,7 @@ Defined.
 
 Section Question_3.
 
-(** Short name for the equivalence obtained in q_3_4,
+(** Short name for the equivalence obtained in [q_3_4],
     instanciated to our H-type [A]. *)
 
 Let ε := (q_3_4 A μ _ _).
@@ -627,12 +627,13 @@ Section Exercise_5.
 
 Section Question_1.
 
-(* [S1] is the inductive definition of the circle, not to be confused
-   with [S^1] which is the definition based on iterated suspension
-   (though the two definitions are equivalent). *)
+(** [S1] is the inductive definition of the circle, not to be confused
+    with [S^1] which is the definition based on iterated suspension
+    (though the two definitions are equivalent). *)
 
 Definition ψ' : forall x : S1, x = x.
 Proof.
+  (* By induction on circles *)
   srapply S1_ind; simpl.
   * exact loop.
   * (* Lemma 2.11.2 of the HoTT book *)
